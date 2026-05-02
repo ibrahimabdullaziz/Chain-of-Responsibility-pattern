@@ -1,16 +1,16 @@
-import { ApiRequest, Handler, wait } from "./Handler";
+import { Handler, wait } from "./Handler";
 
 export class Auth extends Handler {
   constructor() {
     super("auth", "Auth");
   }
 
-  protected async process(request: ApiRequest) {
+  async process(request) {
     await wait(500);
 
     if (!request.settings.authEnabled) {
       return {
-        status: "success" as const,
+        status: "success",
         message: "Auth check is disabled, continue.",
         continueChain: true,
       };
@@ -18,14 +18,14 @@ export class Auth extends Handler {
 
     if (!request.token) {
       return {
-        status: "failed" as const,
+        status: "failed",
         message: "No token found. Auth stopped the request.",
         continueChain: false,
       };
     }
 
     return {
-      status: "success" as const,
+      status: "success",
       message: "Token is valid, continue.",
       continueChain: true,
     };

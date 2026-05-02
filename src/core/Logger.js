@@ -1,16 +1,16 @@
-import { ApiRequest, Handler, wait } from "./Handler";
+import { Handler, wait } from "./Handler";
 
 export class Logger extends Handler {
   constructor() {
     super("logger", "Logger");
   }
 
-  protected async process(request: ApiRequest) {
+  async process(request) {
     await wait(400);
 
     if (!request.settings.loggerEnabled) {
       return {
-        status: "success" as const,
+        status: "success",
         message: "Logging is disabled, continue.",
         continueChain: true,
       };
@@ -19,7 +19,7 @@ export class Logger extends Handler {
     request.logs.push(`GET ${request.url}`);
 
     return {
-      status: "success" as const,
+      status: "success",
       message: "Request was logged, continue.",
       continueChain: true,
     };

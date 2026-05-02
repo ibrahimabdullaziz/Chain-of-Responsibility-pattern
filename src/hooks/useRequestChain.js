@@ -1,21 +1,11 @@
 import { useMemo, useState } from "react";
 import { Auth } from "../core/Auth";
 import { Cache } from "../core/Cache";
-import { HandlerStatus, ApiRequest } from "../core/Handler";
 import { Logger } from "../core/Logger";
 import { Retry } from "../core/Retry";
 import { Sender } from "../core/Sender";
 
-type Settings = ApiRequest["settings"];
-
-export type ChainNode = {
-  id: string;
-  name: string;
-  status: HandlerStatus;
-  message: string;
-};
-
-const initialSettings: Settings = {
+const initialSettings = {
   authEnabled: true,
   cacheEnabled: true,
   loggerEnabled: true,
@@ -25,7 +15,7 @@ const initialSettings: Settings = {
   networkFailsFirstTry: false,
 };
 
-function createInitialNodes(): ChainNode[] {
+function createInitialNodes() {
   return [
     { id: "auth", name: "Auth", status: "idle", message: "Waiting" },
     { id: "cache", name: "Cache", status: "idle", message: "Waiting" },
@@ -48,13 +38,13 @@ function buildChain() {
 }
 
 export function useRequestChain() {
-  const [settings, setSettings] = useState<Settings>(initialSettings);
-  const [nodes, setNodes] = useState<ChainNode[]>(createInitialNodes);
-  const [logs, setLogs] = useState<string[]>(["Ready to send API request."]);
+  const [settings, setSettings] = useState(initialSettings);
+  const [nodes, setNodes] = useState(createInitialNodes);
+  const [logs, setLogs] = useState(["Ready to send API request."]);
   const [result, setResult] = useState("Press Send Request to start.");
   const [isRunning, setIsRunning] = useState(false);
 
-  const request = useMemo<ApiRequest>(
+  const request = useMemo(
     () => ({
       url: "/api/orders",
       token: settings.validToken ? "demo-token" : "",
@@ -67,11 +57,11 @@ export function useRequestChain() {
     [settings],
   );
 
-  function updateSettings(newSettings: Partial<Settings>) {
+  function updateSettings(newSettings) {
     setSettings((current) => ({ ...current, ...newSettings }));
   }
 
-  function updateNode(id: string, status: HandlerStatus, message: string) {
+  function updateNode(id, status, message) {
     setNodes((currentNodes) =>
       currentNodes.map((node) =>
         node.id === id ? { ...node, status, message } : node,
