@@ -1,28 +1,14 @@
 # Chain of Responsibility Demo
 
-This is a small React + TypeScript frontend that demonstrates the Chain of Responsibility pattern with an API request flow.
+A minimal React demo that shows the **Chain of Responsibility** design pattern applied to an API request flow.
 
 ## Folder Structure
 
-```txt
+```
 src/
- ├── core/          // Chain Pattern
- │    ├── Handler.ts
- │    ├── Auth.ts
- │    ├── Cache.ts
- │    ├── Logger.ts
- │    ├── Retry.ts
- │    └── Sender.ts
- │
- ├── ui/            // Components
- │    ├── ChainView.tsx
- │    ├── Node.tsx
- │    └── Logs.tsx
- │
- ├── hooks/
- │    └── useRequestChain.ts
- │
- └── App.tsx
+ ├── chain.js   ← The entire pattern (base Handler + 4 concrete handlers)
+ ├── App.jsx    ← UI: 2 toggles + visual chain
+ └── styles.css ← Styling
 ```
 
 ## Run
@@ -32,26 +18,43 @@ npm install
 npm run dev
 ```
 
-## Pattern Explanation
+## How It Works
 
-`Handler.ts` is the base class. It stores the next handler and contains the shared `handle` method.
+A request passes through a chain of handlers in order:
 
-Each concrete handler has one API request responsibility:
+```
+Auth → Cache → Logger → Sender
+```
 
-- `Auth.ts` checks if the request has a valid token.
-- `Cache.ts` can return a cached response and stop the request before sending.
-- `Logger.ts` logs request details.
-- `Retry.ts` controls retry behavior when sending fails.
-- `Sender.ts` simulates the final API request.
+Each handler runs its logic and returns `{ passed: true }` to continue or `{ passed: false }` to stop the chain.
 
-The important part is that every handler returns `continueChain`.
+| Handler | Stops if… |
+|---|---|
+| Auth | No token provided |
+| Cache | Cache hit is enabled |
+| Logger | Never stops (always passes) |
+| Sender | Always stops (final step) |
 
-```ts
-if (!result.continueChain || this.nextHandler === null) {
-  return result;
+## Try These Scenarios
+
+| Setup | Result |
+|---|---|
+| Both toggles off | All 4 handlers run in sequence |
+| "Has Token" off | Auth blocks the request immediately |
+| "Cache Hit" on | Auth passes, Cache short-circuits the rest |
+
+## Pattern Core (`chain.js`)
+
+```js
+class Handler {
+  setNext(handler) { this.next = handler; return handler; }
+
+  async handle(request, log) {
+    const result = await this.process(request, log);
+    if (result.passed && this.next) return this.next.handle(request, log);
+    return result;
+  }
 }
 ```
 
-That means the current handler controls the flow. It can continue to the next handler or stop the request.
-
-This avoids one large function full of complex `if/else` blocks.
+Each concrete handler only overrides `process()`. No handler knows about the others.
