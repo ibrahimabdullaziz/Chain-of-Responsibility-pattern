@@ -21,15 +21,14 @@ class DatabaseProxy {
   #user;
 
   constructor(user) {
-    if (!user.role) throw new Error("A valid user with a role is required.");
+    if (!user.role) throw new Error("pls provide a user role");
     this.#user = user;
   }
 
-  // Lazy initialisation — real subject created only on first authorised access
-  #getRealDatabase() {
+  #getDatabase() {
     if (!this.#database) {
       this.#database = new Database();
-      console.log("[Proxy] Real Database instance created.");
+      console.log("database instance created");
     }
     return this.#database;
   }
@@ -38,24 +37,24 @@ class DatabaseProxy {
     const allowed = permissions[this.#user.role] ?? [];
     if (!allowed.includes(operation)) {
       throw new Error(
-        `Access Denied: role "${this.#user.role}" cannot perform "${operation}".`,
+        `user don't have access becasue role:"${this.#user.role}" cannot perform "${operation}"`,
       );
     }
   }
 
   readData() {
     this.#checkPermission("readData");
-    this.#getRealDatabase().readData();
+    this.#getDatabase().readData();
   }
 
   insertData() {
     this.#checkPermission("insertData");
-    this.#getRealDatabase().insertData();
+    this.#getDatabase().insertData();
   }
 
   deleteData() {
     this.#checkPermission("deleteData");
-    this.#getRealDatabase().deleteData();
+    this.#getDatabase().deleteData();
   }
 }
 
