@@ -18,6 +18,7 @@ The **Chain of Responsibility** is a behavioral design pattern that lets you pas
 ### How it works in this demo:
 
 The request flow follows this sequence:
+
 1. **Auth**: Checks if a token is provided.
 2. **Cache**: Checks if a cache hit is enabled (can short-circuit the chain).
 3. **Logger**: Logs the request (always passes).
@@ -33,6 +34,7 @@ The request flow follows this sequence:
 ### Installation
 
 1. Navigate to the project directory:
+
    ```bash
    cd chain
    ```
@@ -45,6 +47,7 @@ The request flow follows this sequence:
 ### Development
 
 To start the development server:
+
 ```bash
 npm run dev
 ```
@@ -52,6 +55,7 @@ npm run dev
 ### Build
 
 To create a production build:
+
 ```bash
 npm run build
 ```
@@ -63,5 +67,3 @@ npm run build
 - **"Cache Hit" on**: The Auth handler passes, but the Cache handler stops the chain, demonstrating short-circuiting logic.
 
 ---
-
-Built with ❤️ using React and Vite.
