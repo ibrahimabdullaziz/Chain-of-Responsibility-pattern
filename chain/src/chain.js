@@ -30,11 +30,11 @@ class AuthHandler extends Handler {
     await delay(600);
 
     if (!request.token) {
-      log("Auth", " No token — request blocked.", "failed");
+      log("Auth", "❌ No token — request blocked.", "failed");
       return { passed: false, message: "Auth failed: no token." };
     }
 
-    log("Auth", "Token found — request allowed.", "success");
+    log("Auth", "✅ Token found — request allowed.", "success");
     return { passed: true };
   }
 }
@@ -44,11 +44,11 @@ class CacheHandler extends Handler {
     await delay(500);
 
     if (request.useCache) {
-      log("Cache", "Cache hit — returning cached response.", "stopped");
+      log("Cache", "⚡ Cache hit — returning cached response.", "stopped");
       return { passed: false, message: "Cache hit: returned cached data." };
     }
 
-    log("Cache", " No cache — checking next handler.", "success");
+    log("Cache", "🔍 No cache — checking next handler.", "success");
     return { passed: true };
   }
 }
@@ -56,7 +56,7 @@ class CacheHandler extends Handler {
 class LoggerHandler extends Handler {
   async process(request, log) {
     await delay(400);
-    log("Logger", ` Logged: GET ${request.url}`, "success");
+    log("Logger", `📝 Logged: GET ${request.url}`, "success");
     return { passed: true };
   }
 }
@@ -64,7 +64,7 @@ class LoggerHandler extends Handler {
 class SenderHandler extends Handler {
   async process(request, log) {
     await delay(700);
-    log("Sender", "Request sent — got fresh response!", "success");
+    log("Sender", "🚀 Request sent — got fresh response!", "success");
     return { passed: false, message: "Success: fresh data from server." };
   }
 }
