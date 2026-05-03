@@ -72,8 +72,8 @@ class SenderHandler extends Handler {
 // ─── CHAIN BUILDER ───────────────────────────────────────────────────────────
 
 export function buildChain() {
-  const auth   = new AuthHandler();
-  const cache  = new CacheHandler();
+  const auth = new AuthHandler();
+  const cache = new CacheHandler();
   const logger = new LoggerHandler();
   const sender = new SenderHandler();
 
