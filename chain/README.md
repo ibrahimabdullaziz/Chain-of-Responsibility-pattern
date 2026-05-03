@@ -1,60 +1,43 @@
 # Chain of Responsibility Demo
 
-A minimal React demo that shows the **Chain of Responsibility** design pattern applied to an API request flow.
+This sub-project contains the interactive React demonstration of the **Chain of Responsibility** design pattern.
 
 ## Folder Structure
 
-```
+```text
 src/
- ├── chain.js   ← The entire pattern (base Handler + 4 concrete handlers)
- ├── App.jsx    ← UI: 2 toggles + visual chain
- └── styles.css ← Styling
+ ├── chain.js   ← The core logic (Base Handler + 4 Concrete handlers)
+ ├── App.jsx    ← React UI with state toggles & visual feedback
+ └── styles.css ← Premium glassmorphism styling
 ```
 
-## Run
+## Local Development
 
 ```bash
+# Install dependencies
 npm install
+
+# Start the dev server
 npm run dev
 ```
 
-## How It Works
+## The Chain Logic
 
-A request passes through a chain of handlers in order:
+The request flow follows a strict sequence. Each handler has the authority to either continue or stop the chain.
 
-```
-Auth → Cache → Logger → Sender
-```
+| Handler    | Responsibility           | Stopping Condition            |
+| :--------- | :----------------------- | :---------------------------- |
+| **Auth**   | Security check           | No token provided             |
+| **Cache**  | Performance optimization | Cache hit is enabled          |
+| **Logger** | Monitoring               | Never stops (non-blocking)    |
+| **Sender** | Final execution          | Always stops (terminal point) |
 
-Each handler runs its logic and returns `{ passed: true }` to continue or `{ passed: false }` to stop the chain.
+## Scenarios to Test
 
-| Handler | Stops if… |
-|---|---|
-| Auth | No token provided |
-| Cache | Cache hit is enabled |
-| Logger | Never stops (always passes) |
-| Sender | Always stops (final step) |
+- **Standard Success**: Toggle "Has Token" ON and "Cache Hit" OFF. The request will traverse the entire chain.
+- **Short-Circuit (Cache)**: Toggle "Cache Hit" ON. The chain stops at the Cache handler, simulating a fast response.
+- **Security Block**: Toggle "Has Token" OFF. The chain stops at the very beginning.
 
-## Try These Scenarios
+---
 
-| Setup | Result |
-|---|---|
-| Both toggles off | All 4 handlers run in sequence |
-| "Has Token" off | Auth blocks the request immediately |
-| "Cache Hit" on | Auth passes, Cache short-circuits the rest |
-
-## Pattern Core (`chain.js`)
-
-```js
-class Handler {
-  setNext(handler) { this.next = handler; return handler; }
-
-  async handle(request, log) {
-    const result = await this.process(request, log);
-    if (result.passed && this.next) return this.next.handle(request, log);
-    return result;
-  }
-}
-```
-
-Each concrete handler only overrides `process()`. No handler knows about the others.
+_Part of the [Design Patterns Showcase](../README.md)_
